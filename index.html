@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Data Room</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-8">
+        <h1 class="text-2xl font-bold mb-6 text-gray-800">Generate Data Room</h1>
+        <form id="generateDataRoomForm" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+
+            <div class="mb-4">
+                <label for="initiatorEmail" class="block text-gray-700 text-sm font-bold mb-2">Initiator Email:</label>
+                <input type="email" id="initiatorEmail" name="initiatorEmail"
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+            </div>
+
+            <div class="mb-4 flex items-center">
+                <input type="checkbox" id="includeProfile" name="includeProfile" class="mr-2">
+                <label for="includeProfile" class="text-gray-700 text-sm font-bold">Include Profile</label>
+           </div>
+
+            <div class="mb-4">
+                <label for="documents_multiple" class="block text-gray-700 text-sm font-bold mb-2">Documents (multiselect):</label>
+                <select multiple id="documents_multiple" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="7a5ecee0-0ddf-4001-a096-0fc520019a8b">Pen Test</option>
+                    <option value="fea4cc81-37ee-4c9e-9d7f-84a7a4653f41">SOC2</option>
+                    <option value="0cbe3223-e85d-4535-9aa5-631e8bcf8103">ISO27001</option>
+                    <option value="037082f7-389a-4bc6-bea3-386bd1f490b6">CAIQ</option>
+                    <option value="038da8ee-7f5e-48c9-9d07-46c57d9d8c96">Whitepaper</option>
+                  </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="recipientEmails" class="block text-gray-700 text-sm font-bold mb-2">Recipient Emails (comma separated):</label>
+                <input type="text" id="recipientEmails" name="recipientEmails" required
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+            </div>
+            
+            <div class="mb-4 flex items-center">
+                <input type="checkbox" id="allowAllUsersAtDomains" name="allowAllUsersAtDomains" class="mr-2">
+                <label for="allowAllUsersAtDomains" class="text-gray-700 text-sm font-bold">Allow All Users at Domains</label>
+            </div>
+
+            <div class="mb-4">
+                <label for="ndaRequired" class="block text-gray-700 text-sm font-bold mb-2">NDA:</label>
+                <select id="ndaRequired" name="ndaRequired" required
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="required">Required</option>
+                    <option value="notRequired">Not Required</option>
+                    <option value="alreadyOnFile">Already on File</option>
+                </select>
+            </div>
+
+           <div class="mb-4">
+                <label for="cc" class="block text-gray-700 text-sm font-bold mb-2">CC Emails (comma separated):</label>
+                <input type="text" id="cc" name="cc"
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+            </div>
+
+
+            <div class="mb-4">
+                <label for="bcc" class="block text-gray-700 text-sm font-bold mb-2">BCC Emails (comma separated):</label>
+                <input type="text" id="bcc" name="bcc"
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+            </div>
+
+              <div class="mb-4">
+                <label for="expiresAt" class="block text-gray-700 text-sm font-bold mb-2">Expires At:</label>
+                <input type="datetime-local" id="expiresAt" name="expiresAt"
+                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+            </div>
+
+            <div class="mb-4">
+                <label for="emailBody" class="block text-gray-700 text-sm font-bold mb-2">Additional text for email recipients (optional)</label>
+                <textarea id="emailBody" name="emailBody"
+                          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+            </div>
+
+             <div class="flex items-center justify-between">
+                <button type="button" onclick="submitForm()"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Generate Data Room
+                </button>
+            </div>
+        </form>
+
+        <div id="result" class="mt-6 bg-gray-50 border border-gray-200 rounded p-4 text-gray-800"></div>
+    </div>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <script>
+        function submitForm() {
+            const form = document.getElementById('generateDataRoomForm');
+            const profile_id = 'a52d2ba3-23d8-40cf-aaea-14e14e1d46d9';
+            const recipientEmails = document.getElementById('recipientEmails').value.split(',').map(email => email.trim());
+            const documentSelect = document.getElementById('documents_multiple');
+            const documentIds = Array.from(documentSelect.selectedOptions).map(option => option.value.trim());            
+            const ndaRequired = document.getElementById('ndaRequired').value;
+            const allowAllUsersAtDomains = document.getElementById('allowAllUsersAtDomains').checked;
+            const cc = document.getElementById('cc').value ? document.getElementById('cc').value.split(',').map(email => email.trim()) : null;
+            const bcc = document.getElementById('bcc').value ? document.getElementById('bcc').value.split(',').map(email => email.trim()) : null;
+            const initiatorEmail = document.getElementById('initiatorEmail').value;
+            const expiresAt = document.getElementById('expiresAt').value ? new Date(document.getElementById('expiresAt').value).toISOString() : null;
+            const emailBody = document.getElementById('emailBody').value;
+            const includeProfile = document.getElementById('includeProfile').checked;
+
+            const requestBody = {
+              recipientEmails: recipientEmails,
+              documentIds: documentIds,
+              ndaRequired: ndaRequired,
+                allowAllUsersAtDomains: allowAllUsersAtDomains ? true : null,
+                cc: cc,
+                bcc: bcc,
+              initiatorEmail: initiatorEmail,
+              expiresAt: expiresAt,
+                emailBody: emailBody,
+              includeProfile: includeProfile ? true : null,
+            };
+
+
+            fetch(`https://api.securitypalhq.com/v1/assurance/${profile_id}/generate-data-room`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer b22b8072-b5f7-470d-a91f-b8000518cad3$W3d0f2SZrFECYhoCDBTlIKghWTxVtyzMPiRE8Ek3ro8'
+                },
+                body: JSON.stringify(requestBody)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                document.getElementById('result').innerText = 'Error: ' + error;
+            });
+        }
+    </script>
+</body>
+</html>
